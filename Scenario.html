@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Sidebar 04</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        code{
+            color: rgb(53, 113, 217);
+            font-size: 13px;
+        }
+
+        h1{
+            font-size: 50px;
+        }
+        h2{
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper d-flex align-items-stretch">
+        <nav id="sidebar">
+            <div class="custom-menu">
+                <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                    <i class="fa fa-bars"></i>
+                    <span class="sr-only">Toggle Menu</span>
+                </button>
+            </div>
+            <h1><a href="/" class="logo">AutoLink</a></h1>
+            <ul class="list-unstyled components mb-5">
+                <li class="active">
+                    <a href=""><span class="fa fa-home mr-3"></span> Homepage</a>
+                </li>
+
+
+                <li>
+                    <a href=""><span class="fa fa-user mr-3"></span> Token</a>
+                </li>
+                <li>
+                    <a href=""><span class="fa fa-user mr-3"></span>Scenario</a>
+                </li>
+
+            </ul>
+
+        </nav>
+
+
+        <div class="p-5 p-md-6 pt-5">
+            <h1>Doc Kubernetes sans Minikube</h1>
+
+            <br>
+            <hr>
+            <br>
+
+            <div class="step">
+            <h2>0. Methode de simulation k8s avec Minikube <a href="https://minikube.sigs.k8s.io/docs/start/">Site officiel</a></h> 		
+                <br><br>
+                <hr>
+                <br>
+                <h2>1.0 Install docker.ios</h2>
+                <code>sudo apt-get update<br>
+    sudo apt-get install docker.io</code>
+    <br>
+    <br>
+    <br><br>
+            <h2>1.1 Installer Kubernetes</h2>
+                <p>Installation des outils <strong>kubeadm, kubelet et kubectl</strong></p>
+                <code>
+                    sudo apt-get update && sudo apt-get install -y apt-transport-https curl<br>
+                    sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -<br>
+                    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list<br>
+                    sudo apt-get update<br>
+                    sudo apt-get install -y kubelet kubeadm kubectl<br>
+                    sudo apt-mark hold kubelet kubeadm kubectl
+                </code>
+                <br><br>
+            </div>
+  
+            <div class="step">
+                <br><br><br>
+                <h2>2. Initialiser le cluster</h2>
+                <p>Sur le nœud maître:</p>
+                <code>
+                    sudo kubeadm init --cri-socket /var/run/dockershim.sock
+                </code>
+            </div>
+    
+            <div class="step">
+                <br><br><br>
+                <h2>3. Configurer <u>kubectl</u> pour l'utilisateur</h2>
+                <code>
+                    mkdir -p $HOME/.kube<br>
+                    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config<br>
+                    sudo chown $(id -u):$(id -j) $HOME/.kube/config
+                </code>
+            </div>
+    
+            <div class="step">
+                <br><br><br>
+                <h2>4. Installer un réseau pour le cluster</h2>
+                <p>Par exemple, en utilisant Weave:</p>
+                <code>
+                    kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+                </code>
+            </div>
+    
+            <div class="step">
+                <br><br><br>
+                <h2>5. Joindre des nœuds worker au cluster</h2>
+                <p>Si nécessaire, cette commande sera affichée à la fin de <strong>kubeadm init:</strong></p>
+                <code>
+                    sudo kubeadm join [votre-adresse-maître]:6443 --token [votre-token] --discovery-token-ca-cert-hash sha256:[votre-hash]
+                </code>
+            </div>
+    
+            <div class="step">
+                <br><br><br>
+                <h2>6. Créer un déploiement et exposer le service</h2>
+                <p>Comme vous l'avez fait avec Minikube:</p>
+                <code>
+                    kubectl create deployment hello-kubernetes --image=kicbase/echo-server:1.0<br>
+                    kubectl expose deployment hello-kubernetes --type=NodePort --port=8080
+                </code>
+            </div>
+    
+            <div class="step">
+                <br><br><br>
+                <h2>7. Port-forward</h2>
+                <code>
+                    kubectl port-forward service/hello-kubernetes 7080:8080
+                </code>
+            </div>
+            <br>
+            <br>
+            <hr>
+            <br>
+            <br>
+            <p>
+    
+        <strong>Kubernetes (k8s): </strong><br>
+        <br>
+            Kubernetes est un système open source qui permet d'automatiser le déploiement, la mise à l'échelle et la gestion des applications conteneurisées.<br>
+            Il fournit un cadre pour exécuter des applications distribuées résilientes sans avoir à s'occuper manuellement de la mise en réseau, du stockage, de la disponibilité, etc.
+            Kubernetes peut être déployé sur des serveurs physiques, dans des clouds publics, des clouds privés ou dans des environnements mixtes.
+    <br><br><br>
+        <strong>Minikube:</strong><br><br>
+            Minikube est un outil qui facilite l'exécution locale d'un cluster Kubernetes à nœud unique, généralement à des fins de développement ou de tests.<br>
+          <br>  Il encapsule le cluster Kubernetes à l'intérieur d'une machine virtuelle (comme VirtualBox) ou d'un conteneur Docker (si vous utilisez le pilote Docker), ou même sur des processus hôtes sans conteneurisation ni virtualisation (avec le pilote none).
+    <br><br><br><br>
+    <strong>Relation entre Minikube et Kubernetes:</strong><br><br>
+    Minikube vous offre un cluster Kubernetes pré-configuré à utiliser localement. Lorsque vous travaillez avec Minikube, vous travaillez en réalité avec un véritable cluster Kubernetes, mais à une échelle réduite et dans un environnement simplifié.
+    <br><br><br>
+    Si vous déployez Kubernetes sans Minikube, par exemple, sur un ensemble de serveurs physiques ou dans le cloud, les composants de Kubernetes ne seront généralement pas encapsulés dans un seul conteneur. Au lieu de cela, chaque composant (comme l'API server, les nodes worker, etcd, etc.) pourrait être exécuté sur des machines distinctes, et le cluster serait configuré pour gérer et orchestrer des conteneurs sur l'ensemble de cet environnement.
+    <br>
+    <br>
+    <strong>En résumé:</strong>
+    <br>
+        Minikube est un outil qui vous donne un cluster Kubernetes local pour le développement et les tests.
+        Kubernetes est le système d'orchestration de conteneurs sous-jacent que Minikube exécute.
+    <br>
+    Lorsque vous utilisez Minikube avec le pilote Docker, c'est une manière d'emballer tous les composants de Kubernetes dans un conteneur pour une facilité d'utilisation, mais ce n'est pas la façon dont un déploiement Kubernetes typique dans un environnement de production serait structuré.</p>
+    
+    <br>
+    <br>
+    <br>
+    <img style="max-width: 500px;" src="https://3.bp.blogspot.com/-3UWNODEJAlE/Wty_rQwXCjI/AAAAAAAADvk/srjSzC_hH8QQE5ZMi-r9So1ji4fWIv-AwCLcBGAs/s1600/2018-04-22%2B22_28_09-Introduction%2Bto%2BMinikube%2B%2528run%2BKubernetes%2Blocally%2B%2529.png"/>
+    <br>
+    <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    <br>
+    <h2>K8s Architecture</h2>
+    <img style="max-width: 800px;" src="https://kubernetes.io/images/docs/kubernetes-cluster-architecture.svg"/>
+        </div>
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/js/popper.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
